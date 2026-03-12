@@ -1,0 +1,8 @@
+{
+  "name": "Paw Care Hub",
+  "description": "The ultimate companion for pet owners: track health, manage appointments, and connect with a community of pet lovers.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ]
+}
