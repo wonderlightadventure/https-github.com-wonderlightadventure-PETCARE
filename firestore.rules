@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: userId (Auth UID)
+    // Fields:
+    //   - uid: string (required) - Firebase Auth UID
+    //   - name: string (required) - User's display name
+    //   - email: string (required) - User's email address
+    //   - photoURL: string (optional) - User's photo URL
+    //   - role: string (optional) - User role (admin/user)
+    //
+    // Collection: pets
+    // Document ID: petId
+    // Fields:
+    //   - ownerId: string (required) - Owner's UID
+    //   - name: string (required) - Pet name
+    //   - species: string (required) - Pet species
+    //   - breed: string (optional) - Pet breed
+    //   - age: string (optional) - Pet age
+    //   - weight: string (optional) - Pet weight
+    //   - photo: string (optional) - Pet photo URL
+    //   - vaccinations: list (optional) - Pet vaccinations
+    //   - medicalRecords: list (optional) - Pet medical records
+    //
+    // Collection: appointments
+    // Document ID: appointmentId
+    // Fields:
+    //   - userId: string (required) - User's UID
+    //   - petId: string (required) - Pet's ID
+    //   - clinicName: string (required) - Clinic name
+    //   - date: string (required) - Appointment date
+    //   - time: string (required) - Appointment time
+    //   - notes: string (optional) - Appointment notes
+    //   - status: string (required) - Appointment status (Upcoming/Completed/Cancelled)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "wonderlightadventure@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function uidNotModified(field) {
+      return !('uid' in request.resource.data) || request.resource.data.uid == resource.data.uid;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && hasRequiredFields(['uid', 'name', 'email']) && hasOnlyAllowedFields(['uid', 'name', 'email', 'photoURL', 'role']) && request.resource.data.uid == userId;
+      allow update: if isOwner(userId) && hasOnlyAllowedFields(['uid', 'name', 'email', 'photoURL', 'role']) && uidNotModified('uid');
+    }
+
+    match /pets/{petId} {
+      allow read: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid && hasRequiredFields(['ownerId', 'name', 'species']);
+      allow update: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin()) && request.resource.data.ownerId == resource.data.ownerId;
+      allow delete: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+    }
+
+    match /appointments/{appointmentId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && hasRequiredFields(['userId', 'petId', 'clinicName', 'date', 'time', 'status']);
+      allow update: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin()) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+  }
+}

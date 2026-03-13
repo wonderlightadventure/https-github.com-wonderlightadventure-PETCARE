@@ -15,16 +15,15 @@ const Pets: React.FC = () => {
     weight: '',
   });
 
-  const handleAddPet = (e: React.FormEvent) => {
+  const handleAddPet = async (e: React.FormEvent) => {
     e.preventDefault();
-    const pet: Pet = {
-      id: Math.random().toString(36).substr(2, 9),
+    const petData = {
       ...newPet,
       photo: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400',
       vaccinations: [],
       medicalRecords: [],
     };
-    addPet(pet);
+    await addPet(petData);
     setIsAdding(false);
     setNewPet({ name: '', species: 'Dog', breed: '', age: '', weight: '' });
   };
@@ -243,7 +242,7 @@ const Pets: React.FC = () => {
                             // Update local selected pet to show changes immediately
                             setSelectedPet({
                               ...selectedPet,
-                              vaccinations: [...selectedPet.vaccinations, {
+                              vaccinations: [...(selectedPet.vaccinations || []), {
                                 type,
                                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
                                 status: 'Done'
@@ -257,7 +256,7 @@ const Pets: React.FC = () => {
                       </button>
                     </div>
                     <div className="space-y-3">
-                      {selectedPet.vaccinations.length > 0 ? (
+                      {selectedPet.vaccinations && selectedPet.vaccinations.length > 0 ? (
                         selectedPet.vaccinations.map((vax, i) => (
                           <div key={i} className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
                             <div className="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
@@ -298,7 +297,7 @@ const Pets: React.FC = () => {
                             // Update local selected pet
                             setSelectedPet({
                               ...selectedPet,
-                              medicalRecords: [...selectedPet.medicalRecords, {
+                              medicalRecords: [...(selectedPet.medicalRecords || []), {
                                 title,
                                 notes,
                                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -312,7 +311,7 @@ const Pets: React.FC = () => {
                       </button>
                     </div>
                     <div className="space-y-3">
-                      {selectedPet.medicalRecords.length > 0 ? (
+                      {selectedPet.medicalRecords && selectedPet.medicalRecords.length > 0 ? (
                         selectedPet.medicalRecords.map((record, i) => (
                           <div key={i} className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
                             <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">

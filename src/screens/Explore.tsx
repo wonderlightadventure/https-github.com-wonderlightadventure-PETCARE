@@ -16,12 +16,11 @@ const Explore: React.FC = () => {
     notes: ''
   });
 
-  const handleBook = (e: React.FormEvent) => {
+  const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedClinic) return;
     
-    addAppointment({
-      id: Math.random().toString(36).substr(2, 9),
+    await addAppointment({
       petId: bookingData.petId || (pets[0]?.id || ''),
       clinicName: selectedClinic.name,
       date: bookingData.date,
@@ -32,7 +31,6 @@ const Explore: React.FC = () => {
     
     setIsBooking(false);
     setSelectedClinic(null);
-    alert('Appointment booked successfully!');
   };
 
   return (

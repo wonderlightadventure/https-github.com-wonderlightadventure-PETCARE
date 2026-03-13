@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string", "description": "User's display name" },
+        "email": { "type": "string", "description": "User's email address" },
+        "photoURL": { "type": "string", "description": "User's photo URL" },
+        "role": { "type": "string", "description": "User role (admin/user)" }
+      },
+      "required": ["uid", "name", "email"]
+    },
+    "Pet": {
+      "title": "Pet",
+      "description": "Pet information",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string", "description": "Owner's UID" },
+        "name": { "type": "string", "description": "Pet name" },
+        "species": { "type": "string", "description": "Pet species" },
+        "breed": { "type": "string", "description": "Pet breed" },
+        "age": { "type": "string", "description": "Pet age" },
+        "weight": { "type": "string", "description": "Pet weight" },
+        "photo": { "type": "string", "description": "Pet photo URL" },
+        "vaccinations": { "type": "array", "description": "Pet vaccinations" },
+        "medicalRecords": { "type": "array", "description": "Pet medical records" }
+      },
+      "required": ["ownerId", "name", "species"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Pet appointment information",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "User's UID" },
+        "petId": { "type": "string", "description": "Pet's ID" },
+        "clinicName": { "type": "string", "description": "Clinic name" },
+        "date": { "type": "string", "description": "Appointment date" },
+        "time": { "type": "string", "description": "Appointment time" },
+        "notes": { "type": "string", "description": "Appointment notes" },
+        "status": { "type": "string", "description": "Appointment status", "enum": ["Upcoming", "Completed", "Cancelled"] }
+      },
+      "required": ["userId", "petId", "clinicName", "date", "time", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "User profile documents"
+    },
+    "/pets/{petId}": {
+      "schema": { "$ref": "Pet" },
+      "description": "Pet documents"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": { "$ref": "Appointment" },
+      "description": "Appointment documents"
+    }
+  }
+}

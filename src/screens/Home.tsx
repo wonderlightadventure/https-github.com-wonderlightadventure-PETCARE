@@ -63,43 +63,45 @@ const Home: React.FC = () => {
           <h3 className="font-bold text-slate-900">Upcoming Appointment</h3>
           <Link to="/pets" className="text-primary text-xs font-bold">View All</Link>
         </div>
-        {upcomingApp ? (
-          <div className="card bg-primary text-white border-none p-6 shadow-lg shadow-primary/20">
-            <div className="flex justify-between items-start mb-6">
-              <div className="flex gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                  <Calendar size={28} />
+        <div className="bg-[#48d877] rounded-3xl p-4">
+          {upcomingApp ? (
+            <div className="card bg-[#3ec27e] text-emerald-950 border-none p-6 shadow-lg shadow-[#3ec27e]/20">
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-950/10 flex items-center justify-center backdrop-blur-sm">
+                    <Calendar size={28} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg leading-tight">{upcomingApp.clinicName}</h4>
+                    <p className="text-emerald-950/80 text-sm mt-1">{upcomingApp.date} • {upcomingApp.time}</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-lg leading-tight">{upcomingApp.clinicName}</h4>
-                  <p className="text-white/80 text-sm mt-1">{upcomingApp.date} • {upcomingApp.time}</p>
-                </div>
+                <span className="bg-emerald-950/10 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-emerald-950/10">Confirmed</span>
               </div>
-              <span className="bg-white/30 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/20">Confirmed</span>
-            </div>
-            <div className="h-px bg-white/10 w-full mb-6" />
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 overflow-hidden border-2 border-white/30">
-                  <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=100" alt="Pet" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <div className="h-px bg-emerald-950/10 w-full mb-6" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-950/10 overflow-hidden border-2 border-emerald-950/20">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=100" alt="Pet" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  </div>
+                  <p className="text-sm font-medium">For {pets.find(p => p.id === upcomingApp.petId)?.name || 'your pet'}</p>
                 </div>
-                <p className="text-sm font-medium">For {pets.find(p => p.id === upcomingApp.petId)?.name || 'your pet'}</p>
+                <Link to="/pets" className="text-emerald-950/80 hover:text-emerald-950 transition-colors">
+                  <ChevronRight size={20} />
+                </Link>
               </div>
-              <Link to="/pets" className="text-white/80 hover:text-white transition-colors">
-                <ChevronRight size={20} />
-              </Link>
             </div>
-          </div>
-        ) : (
-          <div className="card border-dashed border-slate-200 bg-slate-50/50 flex flex-col items-center justify-center py-10 text-slate-400">
-            <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-              <Calendar size={32} className="opacity-30" />
+          ) : (
+            <div className="card border-dashed border-emerald-950/20 bg-[#3ec27e] flex flex-col items-center justify-center py-10 text-emerald-950">
+              <div className="w-16 h-16 rounded-full bg-emerald-950/10 flex items-center justify-center mb-4">
+                <Calendar size={32} className="opacity-80" />
+              </div>
+              <p className="text-sm font-bold text-emerald-950">No upcoming appointments</p>
+              <p className="text-xs text-emerald-950/80 mt-1 mb-6">Keep your pet healthy with regular checkups</p>
+              <Link to="/explore" className="bg-emerald-950 text-white font-bold rounded-full py-2 px-6 text-xs h-auto w-auto shadow-md">Book Now</Link>
             </div>
-            <p className="text-sm font-bold text-slate-600">No upcoming appointments</p>
-            <p className="text-xs text-slate-400 mt-1 mb-6">Keep your pet healthy with regular checkups</p>
-            <Link to="/explore" className="btn-primary py-2 px-6 text-xs h-auto w-auto shadow-md">Book Now</Link>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       {/* Health Alerts */}
